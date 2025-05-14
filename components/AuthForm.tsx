@@ -5,22 +5,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField as ShadcnFormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormField as ShadcnFormField } from "@/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
-import { error } from "console";
 import FormField from "./FormField";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
