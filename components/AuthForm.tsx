@@ -62,6 +62,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
         }
 
         toast.success("Account created Successfully! Please Sign in");
+        setLoading(prev => !prev)
         router.push("/sign-in");
       } else {
         const { email, password } = values;
@@ -70,7 +71,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
         const idToken = await userCredential.user.getIdToken();
 
-        if (!idToken) {
+        if (!idToken || !userCredential) {
           toast.error('Sign in failed')
           return
         }
@@ -79,7 +80,8 @@ const AuthForm = ({ type }: { type: FormType }) => {
           idToken
         })
 
-        toast.success("Sign in Successful.");
+        toast.success("Sign in Successful. Redirecting to Dashboard...");
+        setLoading(prev => !prev)
         router.push("/");
       }
     } catch (error) {
