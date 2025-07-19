@@ -71,10 +71,6 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
         const idToken = await userCredential.user.getIdToken();
 
-        if (!idToken || !userCredential) {
-          toast.error('Sign in failed')
-          return
-        }
         await signIn({
           email,
           idToken
@@ -87,7 +83,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
     } catch (error) {
       setLoading(prev => !prev)
       console.log(error);
-      toast.error(`There was an error: ${error}`);
+      toast.error(`Sign in failed: ${error}`);
     }
   }
 
