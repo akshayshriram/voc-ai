@@ -31,7 +31,7 @@ async function Home() {
         </div>
         <div className="flex flex-col gap-6 w-full md:w-1/2">
           <h2>Paste Your Job Description to Generate a Custom Interview</h2>
-          <GenerateInterviewForm />
+          <GenerateInterviewForm userId={user?.id!} />
         </div>
       </section>
       <section className="flex flex-col gap-6 mt-8">

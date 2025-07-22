@@ -8,12 +8,14 @@ import { Form, FormField as ShadcnFormField } from "@/components/ui/form";
 import FormField from "@/components/FormField";
 import { useState } from "react";
 import axios from 'axios'
+import { redirect } from "next/navigation";
 
 const generateInterviewSchema = z.object({
     jobDescription: z.string().min(50, "Job description must be at least 5-10 sentences. For accuracy input Role, Type, level, techstack,number of questions"),
 });
 
-const GenerateInterviewForm = () => {
+const GenerateInterviewForm = ({ userId: any }) => {
+
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof generateInterviewSchema>>({
         resolver: zodResolver(generateInterviewSchema),
@@ -27,8 +29,10 @@ const GenerateInterviewForm = () => {
         // Handle your submit logic here (e.g., send to API)
         try {
             const { jobDescription } = values
-            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jd/generate`, { jobDescription })
-            console.log(res);
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jd/generate`, { jobDescription, userId })
+
+
+            redirect('/')
 
         } catch (error) {
             setLoading(false);
