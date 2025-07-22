@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField as ShadcnFormField } from "@/components/ui/form";
 import FormField from "@/components/FormField";
 import { useState } from "react";
+import axios from 'axios'
 
 const generateInterviewSchema = z.object({
-    jobDescription: z.string().min(10, "Job description must be at least 5-10 sentences. For accuracy input Role, Type, level, techstack,number of questions"),
+    jobDescription: z.string().min(50, "Job description must be at least 5-10 sentences. For accuracy input Role, Type, level, techstack,number of questions"),
 });
 
 const GenerateInterviewForm = () => {
@@ -24,8 +25,15 @@ const GenerateInterviewForm = () => {
     async function onSubmit(values: z.infer<typeof generateInterviewSchema>) {
         setLoading(true);
         // Handle your submit logic here (e.g., send to API)
-        alert("Generating interview for: " + values.jobDescription);
-        setLoading(false);
+        try {
+            const { jobDescription } = values
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jd/generate`, { jobDescription })
+            console.log(res);
+
+        } catch (error) {
+            setLoading(false);
+            console.error("ERROR while generating interview using JD:", error)
+        }
         form.reset();
     }
 
