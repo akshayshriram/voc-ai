@@ -1,3 +1,4 @@
+import GenerateInterviewForm from "@/components/GenerateInterview";
 import InterviewCard from "@/components/InterviewCard";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.actions";
@@ -18,23 +19,20 @@ async function Home() {
 
   return (
     <>
-      <section className="card-cta">
-        <div className="flex flex-col gap-6 max-w-lg">
+      <section className="card-cta flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col gap-6 w-full md:w-1/2 h-full">
           <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
           <p className="text-lg">
-            Practice on real interview questions & get instant feedback
+            Enhance your preparation by practicing real interview questions and receiving instant, intelligent feedback.
           </p>
           <Button asChild className="btn-primary max-sm:w-full">
             <Link href="/interview">Start an Interview</Link>
           </Button>
         </div>
-        <Image
-          src="/robot.png"
-          alt="robo-dude"
-          width={400}
-          height={400}
-          className="max-sm:hidden"
-        />
+        <div className="flex flex-col gap-6 w-full md:w-1/2">
+          <h2>Paste Your Job Description to Generate a Custom Interview</h2>
+          <GenerateInterviewForm />
+        </div>
       </section>
       <section className="flex flex-col gap-6 mt-8">
         <h2>Your Interview</h2>

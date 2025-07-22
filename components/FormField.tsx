@@ -3,18 +3,20 @@ import {
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "./ui/form";
-import { Input } from "./ui/input";
+import { Input, Textarea } from "./ui/input";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 interface FormFieldProps<T extends FieldValues> {
   control: Control<T>;
   name: Path<T>;
-  label: string;
+  label: string | "";
   placeholder?: string;
   type?: "text" | "email" | "password" | "file";
+  as?: "input" | "textarea";
+  className?: string;
+  disabled?: boolean;
 }
 
 const FormField = <T extends FieldValues>({
@@ -23,6 +25,10 @@ const FormField = <T extends FieldValues>({
   label,
   placeholder,
   type = "text",
+  as = "input",
+  className = "input",
+  disabled = false,
+  ...props
 }: FormFieldProps<T>) => {
   return (
     <Controller
@@ -32,12 +38,24 @@ const FormField = <T extends FieldValues>({
         <FormItem>
           <FormLabel className="label"> {label}</FormLabel>
           <FormControl>
-            <Input
-              className="input"
-              type={type}
-              placeholder={placeholder}
-              {...field}
-            />
+            {as === "textarea" ? (
+              <Textarea
+                className="min-h-[100px]"
+                placeholder="Enter your job description"
+                disabled={disabled}
+                {...field}
+                {...props}
+              />
+            ) : (
+              <Input
+                className={className}
+                type={type}
+                placeholder={placeholder}
+                disabled={disabled}
+                {...field}
+                {...props}
+              />
+            )}
           </FormControl>
           <FormMessage />
         </FormItem>
