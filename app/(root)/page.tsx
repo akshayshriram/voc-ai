@@ -19,11 +19,12 @@ async function Home() {
 
   return (
     <>
-      <section className="card-cta flex flex-col lg:flex-row gap-6">
+      <section className="card-cta flex flex-col lg:flex-row gap-6 items-start">
         <div className="flex flex-col gap-6 w-full md:w-1/2 h-full">
-          <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
+          <h2>Get Interview-Ready with Your AI Voice - Practice & Feedback</h2>
           <p className="text-lg">
-            Enhance your preparation by practicing real interview questions and receiving instant, intelligent feedback.
+            Supercharge your preparation with an AI voice assistant that generates personalized mock interviews based on your role or job description.
+            Practice with realistic, role-specific questions and receive instant feedback on your responses
           </p>
           <Button asChild className="btn-primary max-sm:w-full">
             <Link href="/interview">Start an Interview</Link>

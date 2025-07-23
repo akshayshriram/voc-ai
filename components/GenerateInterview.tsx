@@ -6,15 +6,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Form, FormField as ShadcnFormField } from "@/components/ui/form";
 import FormField from "@/components/FormField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios'
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 const generateInterviewSchema = z.object({
-    jobDescription: z.string().min(50, "Job description must be at least 5-10 sentences. For accuracy input Role, Type, level, techstack,number of questions"),
+    jobDescription: z
+        .string()
+        .min(50, "Enter at least 50 wrods content with role, type, level, tech stack.")
+        .refine(
+            (val) => val.trim().split(/\s+/).length >= 50,
+            { message: "Enter at least 50 wrods content with role, type, level, tech stack." }
+        ),
 });
 
-const GenerateInterviewForm = ({ userId: any }) => {
+interface GenerateInterviewForm {
+    userId?: string;
+}
+
+const GenerateInterviewForm = ({ userId }: GenerateInterviewForm) => {
 
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof generateInterviewSchema>>({
@@ -23,7 +34,7 @@ const GenerateInterviewForm = ({ userId: any }) => {
             jobDescription: "",
         },
     });
-
+    const { errors } = form.formState;
     async function onSubmit(values: z.infer<typeof generateInterviewSchema>) {
         setLoading(true);
         // Handle your submit logic here (e.g., send to API)
@@ -31,19 +42,25 @@ const GenerateInterviewForm = ({ userId: any }) => {
             const { jobDescription } = values
             const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jd/generate`, { jobDescription, userId })
 
-
+            toast.success("Interview Generated Successfully using Job Description!")
+            form.reset();
             redirect('/')
 
         } catch (error) {
             setLoading(false);
             console.error("ERROR while generating interview using JD:", error)
         }
-        form.reset();
     }
+    // Show toast on validation error
+    useEffect(() => {
+        if (errors.jobDescription) {
+            toast.error(errors.jobDescription.message);
+        }
+    }, [errors.jobDescription]);
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                     control={form.control}
                     name="jobDescription"
