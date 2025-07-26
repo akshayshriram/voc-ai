@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios'
 import { redirect } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from '@tanstack/react-query';
 
 const generateInterviewSchema = z.object({
     jobDescription: z
@@ -28,6 +29,8 @@ interface GenerateInterviewForm {
 const GenerateInterviewForm = ({ userId }: GenerateInterviewForm) => {
 
     const [loading, setLoading] = useState(false);
+    const queryClient = useQueryClient();
+
     const form = useForm<z.infer<typeof generateInterviewSchema>>({
         resolver: zodResolver(generateInterviewSchema),
         defaultValues: {
@@ -35,6 +38,7 @@ const GenerateInterviewForm = ({ userId }: GenerateInterviewForm) => {
         },
     });
     const { errors } = form.formState;
+
     async function onSubmit(values: z.infer<typeof generateInterviewSchema>) {
         setLoading(true);
         // Handle your submit logic here (e.g., send to API)
@@ -43,6 +47,11 @@ const GenerateInterviewForm = ({ userId }: GenerateInterviewForm) => {
             const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/jd/generate`, { jobDescription, userId })
 
             toast.success("Interview Generated Successfully using Job Description!")
+
+            // Invalidate both interview queries to refresh the data
+            queryClient.invalidateQueries({ queryKey: ['interviews', userId] });
+            queryClient.invalidateQueries({ queryKey: ['latest-interviews', userId] });
+
             form.reset();
             redirect('/')
 

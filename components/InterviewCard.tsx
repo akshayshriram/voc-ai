@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import dayjs from "dayjs";
 import Image from "next/image";
@@ -5,20 +6,22 @@ import { getRandomInterviewCover } from "@/lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import DisplayTechIcons from "./DisplayTechIcons";
-import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
-const InterviewCard = async ({
-  id,
-  userId,
-  role,
-  type,
-  techstack,
-  createdAt,
-}: InterviewCardProps) => {
-  const feedback = userId && id ? await getFeedbackByInterviewId({
-    interviewId: id,
-    userId: userId
-  }) : null
+const useFeedback = (interviewId: string, userId: string) => {
+  return useQuery({
+    queryKey: ['feedback', interviewId, userId],
+    queryFn: async () => {
+      const response = await axios.get(`/api/feedback?interviewId=${interviewId}&userId=${userId}`);
+      return response.data;
+    },
+    enabled: !!interviewId && !!userId,
+  });
+};
+
+const InterviewCard = ({ id, userId, role, type, techstack, createdAt }: InterviewCardProps) => {
+  const { data: feedback } = useFeedback(id ?? '', userId ?? '');
   const normalizeType = /mix/gi.test(type) ? "Mixed" : type;
   const formattedDate = dayjs(
     feedback?.createdAt || createdAt || Date.now()
